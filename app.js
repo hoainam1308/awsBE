@@ -5,12 +5,13 @@ const cookieParser = require('cookie-parser');
 const cors = require('cors');
 require('dotenv').config();
 
+const mongoURI = process.env.MONGO_URI;
 
-// mongoose.connect('mongodb://localhost:27017/Booking').then(() => {
-//   console.log("MongoDB connected successfully");
-// }).catch(err => {
-//   console.error("MongoDB connection error:", err);
-// });
+mongoose.connect(mongoURI).then(() => {
+  console.log("MongoDB connected successfully");
+}).catch(err => {
+  console.error("MongoDB connection error:", err);
+});
 const secret_key = process.env.JWT_SECRET;
 var indexRouter = require('./routes/index');
 
@@ -23,10 +24,11 @@ app.use(cookieParser(secret_key));
 app.use('/uploads', express.static('uploads'));
 app.use(express.static('public'));
 
-// app.use(cors({
-//   origin: 'http://localhost:5173',
-//   credentials: true
-// }));
+const frontendUrl = process.env.FRONTEND_URL;
+app.use(cors({
+  origin: frontendUrl,
+  credentials: true
+}));
 
 app.use('/', indexRouter);
 app.use('/auths', require('./routes/auths')); // Ensure this line is added to use the auths route
